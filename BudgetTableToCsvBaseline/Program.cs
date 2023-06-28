@@ -10,7 +10,7 @@ namespace BudgetTableToCsvBaseline
     {
         private static void ConvertBudgetTableToCsv(string htmlData, string csvPath) {
             try {
-                Console.WriteLine("### Started Parsing HTML.");
+                Console.WriteLine("### Started Parsing HTML table.");
                 var htmlDoc = new HtmlDocument();
                 htmlDoc.LoadHtml(htmlData);
 
@@ -25,11 +25,9 @@ namespace BudgetTableToCsvBaseline
                 var indexRow = 1;
                 foreach (var row in tableRows)
                 {
-                    var indexCell = 0;
                     foreach (var cell in row.SelectNodes($"//table/tbody/tr[{indexRow}]/td"))
                     {
                         tableCellTexts[indexRow-1].Add(cell.InnerText.Trim());
-                        indexCell++;
                     }
                     indexRow++;
                     tableCellTexts.Add(new List<object>());
@@ -40,6 +38,7 @@ namespace BudgetTableToCsvBaseline
                     .WithColumn(tableHeaderTexts)
                     .ExportAndWriteLine();
 
+                Console.WriteLine("### Started writing table to csv file.");
                 WriteCsv(csvPath, tableCellTexts, tableHeaderTexts);
                 
             } catch (Exception ex) {
