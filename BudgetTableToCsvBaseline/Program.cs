@@ -65,11 +65,11 @@ namespace BudgetTableToCsvBaseline
                 }
                 cw.NextRecord();
 
-                foreach (var thing in rowRecords)
+                foreach (var row in rowRecords)
                 {
-                    foreach (var a in thing)
+                    foreach (var field in row)
                     {
-                        cw.WriteField(thing);
+                        cw.WriteField(field);
                     }
                     cw.NextRecord();
                 }
