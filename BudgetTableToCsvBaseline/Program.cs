@@ -3,6 +3,7 @@ using CsvHelper;
 using System.Globalization;
 using System.Text;
 using ConsoleTableExt;
+using CsvHelper.Configuration;
 
 namespace BudgetTableToCsvBaseline 
 { 
@@ -64,7 +65,7 @@ namespace BudgetTableToCsvBaseline
                 // var tableData = new List<List<object>>
                 // {
                 //     new List<object>{ "Sakura Yamamoto", "Support Engineer", "London", 46},
-                //     new List<object>{ "Serge Baldwin", "Data Coordinator", "San Francisco", 28, "something else" },
+                //     new List<object>{ "Serge Baldwin", "Data Coordinator", "San Francisco", 28, "rowRecords else" },
                 //     new List<object>{ "Shad Decker", "Regional Director", "Edinburgh"},
                 // };
                 //
@@ -73,14 +74,71 @@ namespace BudgetTableToCsvBaseline
                 //     .WithColumn("Id", "First Name", "Sur Name")
                 //     .ExportAndWriteLine();
 
+                /*using var writer = new StreamWriter("C:\\Temp2\\bok.csv");
+                var configuration = new CsvConfiguration(CultureInfo.InvariantCulture)
+                {
+                    Delimiter = ";",
+                    Comment = '#',
+                    HasHeaderRecord = true,
+                    MissingFieldFound = null
+                };
                 
-                WriteDataToCsv(coinData);
+                //using var csv = new CsvWriter(writer, configuration);
+                // populating the CSV file 
+                //csv.WriteRecord(tableHeaderTexts);
+                using (var csv = new CsvWriter(writer, configuration))
+                {
+                    // csv.WriteRecord(tableHeaderTexts);
+                    // csv.NextRecord();
+
+                    foreach(var cellsFromRow in tableCellTexts) {
+                        csv.WriteRecord(cellsFromRow);
+                    }
+                    //csv.WriteRecords(tableCellTexts);
+                }
+                //csv.WriteRecords(tableCellTexts);
+                writer.Close();*/
+
+                WriteMeSomeCsv("C:\\Temp2\\bok2.csv", tableCellTexts, tableHeaderTexts);
+                
+                //WriteDataToCsv(coinData);
             } catch (Exception ex) {
                 Console.WriteLine("ParseHtml Failed: {0}", ex.Message);
             }
         }
+
+
+        public static void WriteMeSomeCsv(string file, List<List<object>> rowRecords, List<string> tableHeader)
+        {
+            var configuration = new CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                Delimiter = ";",
+                Comment = '#',
+                HasHeaderRecord = false,
+                MissingFieldFound = null
+            };
+            
+            using (StreamWriter sw = new StreamWriter(file))
+            using (CsvWriter cw = new CsvWriter(sw, configuration))
+            {
+                foreach (var column in tableHeader)
+                {
+                    cw.WriteField(column);
+                }
+                cw.NextRecord();
+
+                foreach (var thing in rowRecords)
+                {
+                    foreach (var a in thing)
+                    {
+                        cw.WriteField(thing);
+                    }
+                    cw.NextRecord();
+                }
+            }
+        }
         
-        static void WriteDataToCsv(Dictionary < string, string > cryptoCurrencyData) {
+        /*static void WriteDataToCsv(Dictionary < string, string > cryptoCurrencyData) {
             try {
                 var csvBuilder = new StringBuilder();
 
@@ -94,7 +152,7 @@ namespace BudgetTableToCsvBaseline
             } catch (Exception ex) {
                 Console.WriteLine("WriteDataToCSV Failed: {0}", ex.Message);
             }
-        }
+        }*/
         
         static async Task Main(string[] args) {
             string htmlText = await File.ReadAllTextAsync("C:\\Temp2\\aok.html");
